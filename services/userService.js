@@ -1,6 +1,9 @@
 const { createSetJwtToken } = require('../utils/createSetJwtToken')
 const User = require('../models/userModel');
 const { UserDto } = require('../dto/userDto')
+const bcrypt = require('bcryptjs');
+const AppError = require('../errors/appError')
+const Sequelize = require('sequelize');
 
 exports.createUser = async (userBody) => {
     const Op = Sequelize.Op;
@@ -67,8 +70,8 @@ exports.deleteUser = async (req) => {
     return;
 };
 
-exports.loginUser = async (userBody) => {
-    const { username, password } = userBody;
+exports.loginUser = async (req, res) => {
+    const { username, password } = req.body;
     const user = await User.findOne({
         where: {
             username
@@ -81,7 +84,11 @@ exports.loginUser = async (userBody) => {
         throw new AppError('Invalid Credential', 404);
 
     const user_info = new UserDto(user);
-    return createSetJwtToken(res, user_info);
+    const token = createSetJwtToken(res, user_info);
+    let refreshToken = user.refreshToken;
+    refreshToken.push(token.refreshToken);
+    const updatedUser = await User.update({ refreshToken }, { returning: true, where: { username } }); 
+    return token;
 }
 
 exports.changeUserPassword = async (req) => {

@@ -6,8 +6,12 @@ const userService  = require('../services/userService');
 
 
 exports.protect = catchAsync(async (req, res, next) => {
-    let token = "";
-    token = req.cookies.jwt;
+    console.log(req.body)
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) return res.sendStatus(401);
+    const token = authHeader.split(' ')[1];
+    let accessToken = "";
+    //token = req.body.accessToken;
     if (!token)
         return next(new AppError('You are not logged in! Please log in to get access.', 401));
 
@@ -42,3 +46,7 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
         throw new AppError('Please Log out first', '403');
     next();
 });
+
+exports.getRefreshToken = catchAsync(async ( req,res, next) => {
+
+})

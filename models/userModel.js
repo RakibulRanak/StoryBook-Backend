@@ -35,6 +35,10 @@ const User = sequelize.define('users', {
         validate: {
             notEmpty: true
         }
+    },
+    refreshToken: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: []
     }
 });
 

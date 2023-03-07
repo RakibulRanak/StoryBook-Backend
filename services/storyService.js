@@ -3,8 +3,9 @@ const AppError = require('../errors/appError');
 const { StoryDto } = require('../dto/storyDto')
 
 
-exports.createStory = async (storyBody) => {
-    const { title, username, story } = storyBody;
+exports.createStory = async (req) => {
+    req.body.username = req.user.username;
+    const { title, username, story } = req.body;
     const createdstory = await Story.create({ title, username, story });
     return new StoryDto(createdstory);
 };
