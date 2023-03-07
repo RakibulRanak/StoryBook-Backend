@@ -24,7 +24,6 @@ exports.createUser = async (userBody) => {
 };
 
 exports.getUser = async (userName) => {
-    console.log("HIO")
     const user = await User.findOne({ where: { username: userName } });
     if (!user) throw new AppError(`User not found`, 404);
     return new UserDto(user);

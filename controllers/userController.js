@@ -17,6 +17,12 @@ exports.getUser = async (req, res, next) => {
         sendResponse(req, res, 200, user, 'User fetched successfully')
     } catch (err) { next(err) };
 };
+exports.getLoggedInUser = async (req, res, next) => {
+    try {
+        const user = await userService.getUser(req.user.username);
+        sendResponse(req, res, 200, user, 'User fetched successfully')
+    } catch (err) { next(err) };
+};
 
 exports.getUsers = async (req, res, next) => {
     try {

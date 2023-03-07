@@ -6,7 +6,7 @@ const userService  = require('../services/userService');
 
 
 exports.protect = catchAsync(async (req, res, next) => {
-    console.log(req.body)
+
     const authHeader = req.headers.authorization || req.headers.Authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) return res.sendStatus(401);
     const token = authHeader.split(' ')[1];
@@ -15,7 +15,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     if (!token)
         return next(new AppError('You are not logged in! Please log in to get access.', 401));
 
-    console.log(token)
     const decoded = await promisify(jwt.verify)(token, process.env.jwtSecret);
     const currentUser = decoded.user;
     // const user = await User.findOne({
