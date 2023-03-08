@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const xssClean = require('xss-clean');
 const helmet = require('helmet');
 const path = require('path');
-
+const {getNewAccessToken} = require('../StoryHub-Modified-Backend/utils/getNewAccessToken')
 const morgan = require('morgan');
 const storyRoutes = require('./routes/storyRoutes')
 const userRoutes = require('./routes/userRoutes')
@@ -33,6 +33,7 @@ app.use(xssClean());
 app.use(express.static(__dirname + '/public/media/'));
 app.use('/api/v1/stories', storyRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/token', getNewAccessToken);
 
 
 app.get('/api/v1', (req, res) => {

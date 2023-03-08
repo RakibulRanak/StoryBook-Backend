@@ -15,24 +15,25 @@ exports.protect = catchAsync(async (req, res, next) => {
     if (!token)
         return next(new AppError('You are not logged in! Please log in to get access.', 401));
 
-    const decoded = await promisify(jwt.verify)(token, process.env.jwtSecret);
-    const currentUser = decoded.user;
-    // const user = await User.findOne({
-    //     where: {
-    //         username: currentUser
-    //     }
-    // })
-    const user = await userService.getUser(currentUser);
-    if (user == null)
-        return next(new AppError('The user belonging to this token does no longer exist.', 401));
-    const changedTimestamp = parseInt(user.updatedAt / 1000, 10);
-    if (changedTimestamp > decoded.iat)
-        return next(new AppError('Your credential changed recently.Please log in again', 401));
-    //console.log(changedTimestamp, decoded.iat);
-    req.user = {
-        username: currentUser
-    };
-    next();
+     jwt.verify(token, process.env.jwtAccessTokenSecret,async (err, decoded) => {
+        if (err){ 
+            console.log(err.message); 
+            return res.sendStatus(401);
+        } //invalid token
+       
+        const currentUser = decoded.user;
+        const user = await userService.getUser(currentUser);
+        if (user == null)
+            return next(new AppError('The user belonging to this token does no longer exist.', 401));
+        const changedTimestamp = parseInt(user.updatedAt / 1000, 10);
+        if (changedTimestamp > decoded.iat)
+            return next(new AppError('Your credential changed recently.Please log in again', 401));
+        //console.log(changedTimestamp, decoded.iat);
+        req.user = {
+            username: currentUser
+        };
+        next();
+});
 });
 
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
@@ -46,6 +47,6 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
     next();
 });
 
-exports.getRefreshToken = catchAsync(async ( req,res, next) => {
+// exports.getRefreshToken = catchAsync(async ( req,res, next) => {
 
-})
+// });

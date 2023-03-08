@@ -7,7 +7,7 @@ const { validate } = require('../validations/validate');
 const authMiddleware = require('../middlewares/authMiddleware')
 
 router.post('/login', userController.loginUser);
-router.post('/logout', userController.logoutUser);
+router.post('/logout', authMiddleware.protect,userController.logoutUser);
 // router.post('/logout', authMiddleware.protect, userController.logoutUser);
 router.get('/me', authMiddleware.protect, userController.getLoggedInUser);
 router.get('/:username', userValidation.getUser(), validate, userController.getUser);

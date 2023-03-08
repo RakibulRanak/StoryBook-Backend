@@ -1,21 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-exports.createSetJwtToken = (res, user) => {
+exports.createSetJwtToken = (username, type) => {
     const payload = {
-        user: user.username
+        user: username
     };
-    // var oneWeek = 7 * 24 * 3600 * 1000; //1 weeks       
-    const accessToken = jwt.sign(payload, process.env.jwtSecret, { expiresIn: process.env.jwtSessionTokenExpire });
-    const refreshToken = jwt.sign(payload, process.env.jwtSecret, { expiresIn: process.env.jwtRefreshTokenExpire });
-    // res.cookie('jwt', jwtToken, {
-    //     expires: new Date(
-    //         Date.now() + 3600 * 1000
-    //     ),
-    //     httpOnly: true
-
-    // });
-    // if (process.env.NODE_ENV === 'prooooductin')
-    //     cookieOptions.secure = true;
-    return {accessToken,refreshToken};
+    // var oneWeek = 7 * 24 * 3600 * 1000; //1 weeks
+    if(type == 'access') return jwt.sign(payload, process.env.jwtAccessTokenSecret, { expiresIn: process.env.jwtAccessTokenExpire });
+    else if(type =='refresh') return jwt.sign(payload, process.env.jwtRefreshTokenSecret, { expiresIn: process.env.jwtRefreshTokenExpire });
 };

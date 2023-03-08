@@ -1,6 +1,7 @@
 const js2xmlparser = require("js2xmlparser");
 
 exports.sendJsonResponse = (req, res, statusCode, data, message) => {
+    console.log(data)
     return res.status(statusCode).json({
         message : message == null? undefined: message,
         data,

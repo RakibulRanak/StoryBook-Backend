@@ -54,11 +54,7 @@ exports.loginUser = async (req, res, next) => {
 
 exports.logoutUser = catchAsync(async (req, res, next) => {
     try {
-        res.cookie('jwt', '', {
-            expires: new Date(Date.now() + 10 * 1000),
-            httpOnly: true
-        });
-
+        await userService.logoutUser(req);
         sendResponse(req, res, 200, null, 'User looged Out successfully')
     } catch (err) { next(err) };
 

@@ -82,12 +82,26 @@ exports.loginUser = async (req, res) => {
     if (!validPass)
         throw new AppError('Invalid Credential', 404);
 
-    const user_info = new UserDto(user);
-    const token = createSetJwtToken(res, user_info);
+    const access_token = createSetJwtToken(username,'access');
+    const refresh_token = createSetJwtToken(username,'refresh');
     let refreshToken = user.refreshToken;
-    refreshToken.push(token.refreshToken);
+    refreshToken.push(refresh_token);
     const updatedUser = await User.update({ refreshToken }, { returning: true, where: { username } }); 
-    return token;
+    return {access_token,refresh_token};
+}
+exports.logoutUser = async(req) => {
+    const {username} = req.user;
+    const user = await User.findOne({
+        where: {
+            username
+        }
+    });
+    let validRefreshTokens = user.refreshToken;
+    validRefreshTokens = validRefreshTokens.filter(function(el){
+        return el !== req.body.refresh_token;
+    });
+    const updatedUser = await User.update( {refreshToken:validRefreshTokens} , { returning: true, where: { username } }); 
+    return;
 }
 
 exports.changeUserPassword = async (req) => {
