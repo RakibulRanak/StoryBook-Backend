@@ -3,11 +3,10 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('../errors/catchAsync');
 const { createSetJwtToken } = require('./createSetJwtToken');
 const User = require('../models/userModel');
+const AppError = require('../errors/appError')
 
-exports.getNewAccessToken = (req,res) => {
-    const authHeader = req.headers.authorization || req.headers.Authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) return res.sendStatus(401);
-    const refresh_token = authHeader.split(' ')[1];
+exports.getNewAccessToken = (req,res,next) => {
+    const {refresh_token}  = req.body;
     if (!refresh_token)
         return next(new AppError('You are not logged in! Please log in to get access.', 401));
 

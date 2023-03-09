@@ -54,8 +54,9 @@ exports.loginUser = async (req, res, next) => {
 
 exports.logoutUser = catchAsync(async (req, res, next) => {
     try {
-        await userService.logoutUser(req);
-        sendResponse(req, res, 200, null, 'User looged Out successfully')
+        const loggedOut = await userService.logoutUser(req);
+        res.status(200).send();
+        //sendResponse(req, res, 200, null, 'User logged Out successfully')
     } catch (err) { next(err) };
 
 });

@@ -4,6 +4,7 @@ const { UserDto } = require('../dto/userDto')
 const bcrypt = require('bcryptjs');
 const AppError = require('../errors/appError')
 const Sequelize = require('sequelize');
+const jwt = require('jsonwebtoken');
 
 exports.createUser = async (userBody) => {
     const Op = Sequelize.Op;
@@ -90,18 +91,28 @@ exports.loginUser = async (req, res) => {
     return {access_token,refresh_token};
 }
 exports.logoutUser = async(req) => {
-    const {username} = req.user;
-    const user = await User.findOne({
-        where: {
-            username
-        }
-    });
-    let validRefreshTokens = user.refreshToken;
-    validRefreshTokens = validRefreshTokens.filter(function(el){
-        return el !== req.body.refresh_token;
-    });
-    const updatedUser = await User.update( {refreshToken:validRefreshTokens} , { returning: true, where: { username } }); 
-    return;
+    const {refresh_token} = req.body;
+    if (!refresh_token)
+        throw new AppError('Bad Request', 400);
+    try{
+        const decoded = jwt.verify(refresh_token, process.env.jwtRefreshTokenSecret);
+        console.log(refresh_token)
+        console.log(decoded)
+        const user = await User.findOne({
+             where: {
+                    username : decoded.user
+                }
+        });
+        let validRefreshTokens = user.refreshToken;
+        validRefreshTokens = validRefreshTokens.filter(function(el){
+            return el !== refresh_token;
+        });
+        await User.update( {refreshToken:validRefreshTokens} , { returning: true, where: { username:decoded.user} }); 
+    }
+    catch(err){
+        //throw new AppError('Unauthorized', 401);
+    }
+    
 }
 
 exports.changeUserPassword = async (req) => {
