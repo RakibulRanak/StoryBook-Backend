@@ -36,16 +36,23 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 });
 
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
-    let token = "";
-    token = req.cookies.jwt;
+exports.isLoggedIn = async (req, res, next) => {
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    let token = ""
+    if (authHeader && authHeader.startsWith('Bearer '))
+        token = authHeader.split(' ')[1];
     if (!token)
         return next();
-    const decoded = await promisify(jwt.verify)(token, process.env.jwtSecret);
-    if (decoded)
-        throw new AppError('Please Log out first', '403');
-    next();
-});
+    try{
+        await promisify(jwt.verify)(token, process.env.jwtAccessTokenSecret);
+    }
+    catch(err)
+    {
+        return next()
+    }
+    return res.status(403).json("Log out first")
+    //throw new AppError('Please Log out first', '403');
+};
 
 // exports.getRefreshToken = catchAsync(async ( req,res, next) => {
 

@@ -6,7 +6,7 @@ const userValidation = require('../validations/userValidation')
 const { validate } = require('../validations/validate');
 const authMiddleware = require('../middlewares/authMiddleware')
 
-router.post('/login', userController.loginUser);
+router.post('/login', authMiddleware.isLoggedIn,userController.loginUser);
 router.post('/logout', userController.logoutUser);
 // router.post('/logout', authMiddleware.protect, userController.logoutUser);
 router.get('/me', authMiddleware.protect, userController.getLoggedInUser);
