@@ -10,7 +10,7 @@ exports.createUser = () => {
       .withMessage("Name must contain 1-20 letters"),
     body("password")
       .trim()
-      .isLength({ max: 15, min: 8 })
+      .isLength({ max: 15, min: 6 })
       .withMessage("Password must contain 6-10 letters"),
     body("username")
       .trim()
