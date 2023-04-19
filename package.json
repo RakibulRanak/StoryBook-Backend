@@ -11,6 +11,10 @@
     "type": "git",
     "url": "git+https://github.com/RakibulRanak/Nodejs102.git"
   },
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": ">=16.0.0 <17.0.0"
+  },
   "author": "RakibulRanak",
   "license": "ISC",
   "bugs": {
