@@ -8,7 +8,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 
 router.post("/login", authMiddleware.isLoggedIn, userController.loginUser);
 // router.post("/logout", userController.logoutUser);
-router.post("/logout", authMiddleware.protect, userController.logoutUser);
+router.post("/logout", userController.logoutUser);
 router.get("/me", authMiddleware.protect, userController.getLoggedInUser);
 router.get(
   "/:username",
