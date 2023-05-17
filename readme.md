@@ -15,7 +15,7 @@ To get the Node server running locally:
 - `npm start` to start the local server
 - `npm test` to run the test files
 
-Alternately, you can quickly test the api server with postman on cloud (https://storyhubbackend.herokuapp.com/) or to visit the web app you can visit https://story-hub-application.herokuapp.com/
+Alternately, you can visit the web app you can visit https://story-book.cyclic.app/
 
 
 # Description
