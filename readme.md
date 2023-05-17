@@ -15,7 +15,7 @@ To get the Node server running locally:
 - `npm start` to start the local server
 - `npm test` to run the test files
 
-Alternately, you can visit the web app you can visit https://story-book.cyclic.app/
+Alternately, you can visit the web app at https://story-book.cyclic.app/
 
 
 # Description
